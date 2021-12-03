@@ -137,10 +137,15 @@ m.chargeordischargestore = Constraint(m.j_store, m.t, rule=charge_or_discharge_s
 def obj_expression(m):
     return sum((sum(m.gen_chp_gas[j, t] for j in m.j_chp) +
                 sum(m.gen_heat_plant_gas[j, t] for j in m.j_heat_plant))*m.gas[t] -
+               #gas consumption*gas[t] -
                sum(m.gen_chp_power[j, t] for j in m.j_chp)*m.spot[t] +
+               # on cost for chp and heat plant
                sum(m.on_chp[j, t]*df_chp_costs.loc[j, 'oh'] for j in m.j_chp) +
+    
                sum(m.on_heat_plant[j, t]*df_heat_plant_costs.loc[j, 'oh']
+               
                    for j in m.j_heat_plant) +
+                #   
                sum(m.gen_chp_gas[j, t]*df_chp_costs.loc[j, 'grid'] for j in m.j_chp) +
                sum(m.gen_heat_plant_gas[j, t]*df_heat_plant_costs.loc[j, 'grid']
                    for j in m.j_heat_plant)
